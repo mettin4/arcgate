@@ -439,7 +439,7 @@ export default function App() {
                           </div>
                         ))}
                       </div>
-                      <button onClick={confirmSent} style={btnPrimary}>I Have Sent the Transfer ✓</button>
+                      <button onClick={confirmSent} style={btnPrimary}>I Have Sent the Transfer</button>
                       <button onClick={() => setOnStep(1)} style={btnGhost}>Cancel</button>
                     </>
                   )}
