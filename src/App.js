@@ -434,24 +434,15 @@ export default function App() {
                     <div style={{ textAlign: 'center' }}>
                       <div style={{ width: 56, height: 56, background: '#fffbeb', border: '1px solid rgba(217,119,6,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 22 }}>⏳</div>
                       <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>Waiting for payment</div>
-                      <p style={{ fontSize: 13, color: S.muted, marginBottom: 18, lineHeight: 1.6 }}>Monitoring incoming transfers. Typically 1-2 business days.</p>
+                      <p style={{ fontSize: 13, color: S.muted, marginBottom: 18, lineHeight: 1.6 }}>We're monitoring incoming transfers. Once your EUR payment arrives, USDC will be released to your wallet.</p>
                       <div style={{ background: S.bg, border: `1px solid ${S.border}`, borderRadius: 12, padding: '4px 14px', marginBottom: 16, textAlign: 'left' }}>
                         <div style={drow}><span style={{ color: S.muted }}>Expected</span><span>€{onAmount} EUR</span></div>
                         <div style={drow}><span style={{ color: S.muted }}>You'll receive</span><span style={{ fontWeight: 600 }}>{onReceive} USDC</span></div>
                         <div style={{ ...drow, borderBottom: 'none' }}><span style={{ color: S.muted }}>Reference</span><span style={{ fontFamily: S.mono, fontSize: 12, fontWeight: 600 }}>{onRef}</span></div>
                       </div>
-                      <div style={{ background: S.bg, border: `1px solid ${S.border}`, borderRadius: 12, padding: 16 }}>
-                        <p style={{ fontFamily: S.mono, fontSize: 11, color: S.mutedLight, marginBottom: 12 }}>Demo mode — simulate payment confirmation</p>
-                        {onCountdown > 0 ? (
-                          <div>
-                            <p style={{ fontSize: 28, fontWeight: 700, marginBottom: 4 }}>{onCountdown}s</p>
-                            <p style={{ fontFamily: S.mono, fontSize: 11, color: S.mutedLight }}>until simulation available</p>
-                          </div>
-                        ) : (
-                          <button onClick={simulateReceived} disabled={onLoading} style={btnPrimary(onLoading)}>
-                            {onLoading ? 'Processing…' : '⚡ Simulate payment received'}
-                          </button>
-                        )}
+                      <div style={{ background: S.greenBg, border: `1px solid ${S.greenBorder}`, borderRadius: 12, padding: 16 }}>
+                        <p style={{ fontSize: 13, fontWeight: 600, color: S.green, marginBottom: 6 }}>✓ Transfer details received</p>
+                        <p style={{ fontFamily: S.mono, fontSize: 11, color: S.green, lineHeight: 1.6 }}>Once your EUR payment arrives, USDC will be released to your wallet within 1-2 business days.</p>
                       </div>
                     </div>
                   )}
