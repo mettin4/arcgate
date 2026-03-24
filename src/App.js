@@ -76,7 +76,7 @@ export default function App() {
   const [onRef, setOnRef] = useState('');
   const [onCountdown, setOnCountdown] = useState(null);
   const [onStatus, setOnStatus] = useState('');
-  const [onLoading, setOnLoading] = useState(false);
+ 
 
   const [offStep, setOffStep] = useState(1);
   const [offAmount, setOffAmount] = useState('');
@@ -173,14 +173,6 @@ export default function App() {
   function handleOffAmount(val) { if (val === '' || (parseFloat(val) >= 0 && parseFloat(val) <= parseFloat(balance))) setOffAmount(val); }
   function startOnRamp() { setOnRef('ARCGATE-' + Math.random().toString(36).slice(2, 8).toUpperCase()); setOnStep(2); }
   function confirmSent() { setOnStep(3); setOnStatus('pending'); setOnCountdown(10); }
-
-  async function simulateReceived() {
-    setOnLoading(true);
-    await new Promise(r => setTimeout(r, 2000));
-    addHistory('buy', onAmount, 'EUR');
-    setOnStatus('success');
-    setOnLoading(false);
-  }
 
   async function executeOffRamp() {
     if (!wallet || !offAmount) return;
