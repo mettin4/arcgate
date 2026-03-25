@@ -258,18 +258,18 @@ export default function App() {
             ))}
           </div>
 
-          {/* Recent activity — flex: 1 so it fills remaining height */}
-          <div style={{ background: S.white, border: `1px solid ${S.border}`, borderRadius: 14, padding: '22px 24px', flex: 1 }}>
+          {/* Recent activity */}
+          <div style={{ background: S.white, border: `1px solid ${S.border}`, borderRadius: 14, padding: '22px 24px' }}>
             <div style={{ fontFamily: S.mono, fontSize: 9.5, color: S.mutedLight, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 16 }}>Recent activity</div>
             {!wallet ? (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0', gap: 8 }}>
-                <div style={{ fontSize: 28, opacity: 0.2 }}>↕</div>
-                <p style={{ fontSize: 13, color: S.mutedLight, textAlign: 'center' }}>Connect your wallet to see transaction history.</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0' }}>
+                <div style={{ fontSize: 20, opacity: 0.2 }}>↕</div>
+                <p style={{ fontSize: 13, color: S.mutedLight }}>Connect your wallet to see transaction history.</p>
               </div>
             ) : txHistory.length === 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0', gap: 8 }}>
-                <div style={{ fontSize: 28, opacity: 0.2 }}>↕</div>
-                <p style={{ fontSize: 13, color: S.mutedLight, textAlign: 'center' }}>No transactions yet.</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0' }}>
+                <div style={{ fontSize: 20, opacity: 0.2 }}>↕</div>
+                <p style={{ fontSize: 13, color: S.mutedLight }}>No transactions yet.</p>
               </div>
             ) : txHistory.map((tx, i) => (
               <div key={tx.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: i < txHistory.length - 1 ? `1px solid ${S.borderLight}` : 'none' }}>
@@ -303,7 +303,7 @@ export default function App() {
         </div>
 
         {/* RIGHT — Trade panel, sticky */}
-        <div style={{ position: 'sticky', top: 76, alignSelf: 'start' }}>
+        <div style={{ position: 'sticky', top: 76, alignSelf: 'start', height: 'fit-content' }}>
           <div style={{ background: S.white, border: `1px solid ${S.border}`, borderRadius: 18, overflow: 'hidden' }}>
             <div style={{ display: 'flex', borderBottom: `1px solid ${S.border}` }}>
               {[['onramp', 'Buy USDC'], ['offramp', 'Sell USDC']].map(([t, label]) => (
