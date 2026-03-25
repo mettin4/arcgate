@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import Landing from './Landing';
+import './App.css';
 
 // index.html <head> içine ekle:
 // <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;900&family=Manrope:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -99,8 +100,6 @@ export default function App() {
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { background: ${S.bg}; font-family: ${S.sans}; }
       input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
       input[type=number] { -moz-appearance: textfield; }
       @keyframes agblink { 0%,100%{opacity:1;} 50%{opacity:0.25;} }
@@ -199,10 +198,10 @@ export default function App() {
   if (page === 'landing') return <Landing onLaunch={() => setPage('app')} />;
 
   return (
-    <div style={{ background: S.bg, color: S.text, fontFamily: S.sans, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ fontFamily: S.sans, color: S.text }}>
 
       {/* NAVBAR */}
-      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 40px', height: 60, background: S.white, borderBottom: `1px solid ${S.border}`, position: 'sticky', top: 0, zIndex: 100, flexShrink: 0 }}>
+      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 40px', height: 60, background: S.white, borderBottom: `1px solid ${S.border}`, position: 'sticky', top: 0, zIndex: 100 }}>
         <button onClick={() => setPage('landing')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <Logo />
         </button>
@@ -233,17 +232,15 @@ export default function App() {
       </nav>
 
       {/* BODY */}
-      <div style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '40px 40px', display: 'grid', gridTemplateColumns: '1fr 480px', gap: 40, alignItems: 'start' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 40px', display: 'grid', gridTemplateColumns: '1fr 480px', gap: 40, alignItems: 'start' }}>
 
         {/* LEFT */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-
           <div>
             <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.8px', lineHeight: 1.2, marginBottom: 8 }}>Buy & sell USDC</h1>
             <p style={{ fontSize: 14, color: S.muted, lineHeight: 1.7 }}>EUR bank transfer → USDC on Arc Network. Sub-second settlement. Non-custodial.</p>
           </div>
 
-          {/* Stats */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
             {[
               ['Rate', rateLoading ? '…' : `1 EUR = ${eurRate.toFixed(4)} USDC`, 'Updates every 30s'],
@@ -258,7 +255,6 @@ export default function App() {
             ))}
           </div>
 
-          {/* Recent activity */}
           <div style={{ background: S.white, border: `1px solid ${S.border}`, borderRadius: 14, padding: '22px 24px' }}>
             <div style={{ fontFamily: S.mono, fontSize: 9.5, color: S.mutedLight, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 16 }}>Recent activity</div>
             {!wallet ? (
@@ -292,7 +288,6 @@ export default function App() {
             ))}
           </div>
 
-          {/* Badges */}
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
             {['Powered by Circle USDC', 'Built on Arc Testnet', 'Non-custodial', 'Open Source'].map(b => (
               <div key={b} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: S.muted }}>
@@ -302,8 +297,8 @@ export default function App() {
           </div>
         </div>
 
-        {/* RIGHT — Trade panel, sticky */}
-        <div style={{ position: 'sticky', top: 76, alignSelf: 'start', height: 'fit-content' }}>
+        {/* RIGHT */}
+        <div style={{ position: 'sticky', top: 76 }}>
           <div style={{ background: S.white, border: `1px solid ${S.border}`, borderRadius: 18, overflow: 'hidden' }}>
             <div style={{ display: 'flex', borderBottom: `1px solid ${S.border}` }}>
               {[['onramp', 'Buy USDC'], ['offramp', 'Sell USDC']].map(([t, label]) => (
@@ -314,19 +309,16 @@ export default function App() {
             </div>
 
             <div style={{ padding: '24px 22px' }}>
-
               {/* BUY */}
               {tab === 'onramp' && (
                 <>
                   {onStatus !== 'success' && <StepBar step={onStep} total={3} />}
-
                   {onStep === 1 && !onStatus && (
                     <>
                       <div style={{ fontFamily: S.mono, fontSize: 9.5, color: S.mutedLight, letterSpacing: '1.6px', textTransform: 'uppercase', marginBottom: 8 }}>You pay</div>
                       <div style={{ background: S.bg, border: `1.5px solid ${S.border}`, borderRadius: 13, padding: '14px 16px', marginBottom: 10 }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <input type="number" placeholder="0.00" value={onAmount} onChange={e => handleOnAmount(e.target.value)}
-                            style={{ background: 'none', border: 'none', outline: 'none', fontFamily: S.sans, fontSize: 30, fontWeight: 300, color: S.text, width: 160 }}/>
+                          <input type="number" placeholder="0.00" value={onAmount} onChange={e => handleOnAmount(e.target.value)} style={{ background: 'none', border: 'none', outline: 'none', fontFamily: S.sans, fontSize: 30, fontWeight: 300, color: S.text, width: 160 }}/>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: S.white, border: `1px solid ${S.border}`, borderRadius: 20, padding: '6px 12px', fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap' }}>
                             <span style={{ fontSize: 13, color: S.mutedLight }}>€</span> EUR
                           </div>
@@ -335,13 +327,11 @@ export default function App() {
                           <span>Bank · Card · Apple Pay</span><span>Min €10 · Max €10,000</span>
                         </div>
                       </div>
-
                       <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
                         {['10', '50', '100', '500'].map(v => (
                           <button key={v} onClick={() => setOnAmount(v)} style={{ flex: 1, padding: '8px 0', fontSize: 11, fontFamily: S.mono, background: onAmount === v ? S.text : S.bg, color: onAmount === v ? S.white : S.muted, border: `1px solid ${onAmount === v ? S.text : S.border}`, borderRadius: 8, cursor: 'pointer' }}>€{v}</button>
                         ))}
                       </div>
-
                       <div style={{ fontFamily: S.mono, fontSize: 9.5, color: S.mutedLight, letterSpacing: '1.6px', textTransform: 'uppercase', marginBottom: 8 }}>You receive</div>
                       <div style={{ background: S.bg, border: `1.5px solid ${S.border}`, borderRadius: 13, padding: '14px 16px', marginBottom: 10 }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -353,20 +343,14 @@ export default function App() {
                         </div>
                         <div style={{ fontFamily: S.mono, fontSize: 10, color: S.mutedLight, marginTop: 7 }}>Arc Testnet</div>
                       </div>
-
                       {onAmount && parseFloat(onAmount) > 0 && (
                         <div style={feeBox}>
                           {[['Rate', `1 EUR = ${eurRate.toFixed(4)} USDC`], ['Fee (0.5%)', `€${onFeeAmt}`]].map(([l, r]) => (
-                            <div key={l} style={{ display: 'flex', justifyContent: 'space-between', fontFamily: S.mono, fontSize: 10.5, color: S.mutedLight, padding: '4px 0', borderBottom: `1px solid ${S.borderLight}` }}>
-                              <span>{l}</span><span>{r}</span>
-                            </div>
+                            <div key={l} style={{ display: 'flex', justifyContent: 'space-between', fontFamily: S.mono, fontSize: 10.5, color: S.mutedLight, padding: '4px 0', borderBottom: `1px solid ${S.borderLight}` }}><span>{l}</span><span>{r}</span></div>
                           ))}
-                          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: S.mono, fontSize: 10.5, color: S.text, fontWeight: 600, paddingTop: 8 }}>
-                            <span>Total received</span><span>{onReceive} USDC</span>
-                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: S.mono, fontSize: 10.5, color: S.text, fontWeight: 600, paddingTop: 8 }}><span>Total received</span><span>{onReceive} USDC</span></div>
                         </div>
                       )}
-
                       {onAmount && parseFloat(onAmount) > 0 && parseFloat(onAmount) < 10 && (
                         <p style={{ fontFamily: S.mono, fontSize: 11, color: S.red, marginBottom: 10 }}>Minimum amount is €10</p>
                       )}
@@ -375,7 +359,6 @@ export default function App() {
                       </button>
                     </>
                   )}
-
                   {onStep === 2 && (
                     <>
                       <button onClick={() => setOnStep(1)} style={{ background: 'none', border: 'none', color: S.muted, cursor: 'pointer', fontSize: 12, padding: '0 0 16px', fontFamily: S.sans }}>← Back</button>
@@ -399,7 +382,6 @@ export default function App() {
                       <button onClick={() => setOnStep(1)} style={btnGhost}>Cancel</button>
                     </>
                   )}
-
                   {onStep === 3 && onStatus === 'pending' && (
                     <div style={{ textAlign: 'center' }}>
                       <div style={{ width: 56, height: 56, background: '#fffbeb', border: '1px solid rgba(217,119,6,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 24 }}>⏳</div>
@@ -416,7 +398,6 @@ export default function App() {
                       </div>
                     </div>
                   )}
-
                   {onStatus === 'success' && (
                     <div style={{ textAlign: 'center' }}>
                       <div style={{ width: 60, height: 60, background: S.greenBg, border: `1px solid ${S.greenBorder}`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 24, color: S.green }}>✓</div>
@@ -437,14 +418,12 @@ export default function App() {
               {tab === 'offramp' && (
                 <>
                   {offStatus !== 'success' && <StepBar step={offStep} total={3} />}
-
                   {offStep === 1 && !offStatus && (
                     <>
                       <div style={{ fontFamily: S.mono, fontSize: 9.5, color: S.mutedLight, letterSpacing: '1.6px', textTransform: 'uppercase', marginBottom: 8 }}>You sell</div>
                       <div style={{ background: S.bg, border: `1.5px solid ${S.border}`, borderRadius: 13, padding: '14px 16px', marginBottom: 10 }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <input type="number" placeholder="0.00" value={offAmount} onChange={e => handleOffAmount(e.target.value)}
-                            style={{ background: 'none', border: 'none', outline: 'none', fontFamily: S.sans, fontSize: 30, fontWeight: 300, color: S.text, width: 160 }}/>
+                          <input type="number" placeholder="0.00" value={offAmount} onChange={e => handleOffAmount(e.target.value)} style={{ background: 'none', border: 'none', outline: 'none', fontFamily: S.sans, fontSize: 30, fontWeight: 300, color: S.text, width: 160 }}/>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: S.white, border: `1px solid ${S.border}`, borderRadius: 20, padding: '6px 12px', fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap' }}>
                             <div style={{ width: 17, height: 17, borderRadius: '50%', background: '#2775ca', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 800, color: '#fff', flexShrink: 0 }}>$</div>
                             USDC
@@ -455,7 +434,6 @@ export default function App() {
                           {wallet && <span>Bal: {parseFloat(balance).toFixed(2)} USDC</span>}
                         </div>
                       </div>
-
                       {wallet && (
                         <div style={{ display: 'flex', gap: 6, marginBottom: 14 }}>
                           {['1', '5', '10'].map(v => {
@@ -465,7 +443,6 @@ export default function App() {
                           <button onClick={() => setOffAmount(parseFloat(balance).toFixed(6))} style={{ flex: 1, padding: '8px 0', fontSize: 11, fontFamily: S.mono, background: S.bg, color: S.muted, border: `1px solid ${S.border}`, borderRadius: 8, cursor: 'pointer' }}>Max</button>
                         </div>
                       )}
-
                       <div style={{ fontFamily: S.mono, fontSize: 9.5, color: S.mutedLight, letterSpacing: '1.6px', textTransform: 'uppercase', marginBottom: 8 }}>You receive</div>
                       <div style={{ background: S.bg, border: `1.5px solid ${S.border}`, borderRadius: 13, padding: '14px 16px', marginBottom: 10 }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -476,20 +453,14 @@ export default function App() {
                         </div>
                         <div style={{ fontFamily: S.mono, fontSize: 10, color: S.mutedLight, marginTop: 7 }}>Bank transfer · 1-2 days</div>
                       </div>
-
                       {offAmount && parseFloat(offAmount) > 0 && (
                         <div style={feeBox}>
                           {[['Rate', `1 USDC = €${USDC_TO_EUR.toFixed(4)}`], ['Fee (0.5%)', `${offFeeAmt} USDC`]].map(([l, r]) => (
-                            <div key={l} style={{ display: 'flex', justifyContent: 'space-between', fontFamily: S.mono, fontSize: 10.5, color: S.mutedLight, padding: '4px 0', borderBottom: `1px solid ${S.borderLight}` }}>
-                              <span>{l}</span><span>{r}</span>
-                            </div>
+                            <div key={l} style={{ display: 'flex', justifyContent: 'space-between', fontFamily: S.mono, fontSize: 10.5, color: S.mutedLight, padding: '4px 0', borderBottom: `1px solid ${S.borderLight}` }}><span>{l}</span><span>{r}</span></div>
                           ))}
-                          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: S.mono, fontSize: 10.5, color: S.text, fontWeight: 600, paddingTop: 8 }}>
-                            <span>Total received</span><span>€{offReceive} EUR</span>
-                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: S.mono, fontSize: 10.5, color: S.text, fontWeight: 600, paddingTop: 8 }}><span>Total received</span><span>€{offReceive} EUR</span></div>
                         </div>
                       )}
-
                       {offAmount && parseFloat(offAmount) > parseFloat(balance) && (
                         <p style={{ fontFamily: S.mono, fontSize: 11, color: S.red, marginBottom: 10 }}>Insufficient balance ({parseFloat(balance).toFixed(2)} USDC available)</p>
                       )}
@@ -498,7 +469,6 @@ export default function App() {
                       </button>
                     </>
                   )}
-
                   {offStep === 2 && !offStatus && (
                     <>
                       <button onClick={() => setOffStep(1)} style={{ background: 'none', border: 'none', color: S.muted, cursor: 'pointer', fontSize: 12, padding: '0 0 16px', fontFamily: S.sans }}>← Back</button>
@@ -516,16 +486,13 @@ export default function App() {
                       <button onClick={() => offName && offIban && validateIBAN(offIban) && setOffStep(3)} style={btnPrimary(!(offName && offIban && validateIBAN(offIban)))}>Review & confirm →</button>
                     </>
                   )}
-
                   {offStep === 3 && !offStatus && (
                     <>
                       <button onClick={() => setOffStep(2)} style={{ background: 'none', border: 'none', color: S.muted, cursor: 'pointer', fontSize: 12, padding: '0 0 16px', fontFamily: S.sans }}>← Back</button>
                       <div style={{ fontFamily: S.mono, fontSize: 9.5, color: S.mutedLight, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 14 }}>Confirm sale</div>
                       <div style={{ background: S.bg, border: `1px solid ${S.border}`, borderRadius: 12, padding: '4px 14px', marginBottom: 14 }}>
                         {[['You send', `${offAmount} USDC`], ['You receive', `€${offReceive} EUR`], ['Fee', `${offFeeAmt} USDC`], ['Account holder', offName], ['IBAN', offIban.slice(0,8) + '…' + offIban.slice(-4)], ['Arrival', arrivalDate]].map(([k, v]) => (
-                          <div key={k} style={{ ...drow, borderBottomColor: S.borderLight }}>
-                            <span style={{ color: S.muted }}>{k}</span><span style={{ fontWeight: 500 }}>{v}</span>
-                          </div>
+                          <div key={k} style={{ ...drow, borderBottomColor: S.borderLight }}><span style={{ color: S.muted }}>{k}</span><span style={{ fontWeight: 500 }}>{v}</span></div>
                         ))}
                       </div>
                       <div style={{ background: '#fffbeb', border: '1px solid rgba(217,119,6,0.2)', borderRadius: 10, padding: '10px 14px', marginBottom: 4 }}>
@@ -536,13 +503,7 @@ export default function App() {
                       </button>
                     </>
                   )}
-
-                  {offStatus === 'pending' && (
-                    <div style={{ textAlign: 'center', padding: 20 }}>
-                      <p style={{ fontSize: 14, color: S.yellow }}>⏳ Confirming on Arc Testnet…</p>
-                    </div>
-                  )}
-
+                  {offStatus === 'pending' && <div style={{ textAlign: 'center', padding: 20 }}><p style={{ fontSize: 14, color: S.yellow }}>⏳ Confirming on Arc Testnet…</p></div>}
                   {offStatus === 'success' && (
                     <div style={{ textAlign: 'center' }}>
                       <div style={{ width: 60, height: 60, background: S.greenBg, border: `1px solid ${S.greenBorder}`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 24, color: S.green }}>✓</div>
@@ -554,16 +515,10 @@ export default function App() {
                         <div style={drow}><span style={{ color: S.muted }}>IBAN</span><span style={{ fontFamily: S.mono, fontSize: 12 }}>{offIban.slice(0,8)}…{offIban.slice(-4)}</span></div>
                         <div style={{ ...drow, borderBottom: 'none' }}><span style={{ color: S.muted }}>Est. arrival</span><span>{arrivalDate}</span></div>
                       </div>
-                      {offTxHash && (
-                        <a href={`https://testnet.arcscan.app/tx/${offTxHash}`} target="_blank" rel="noreferrer"
-                          style={{ fontFamily: S.mono, fontSize: 12, color: S.muted, display: 'block', marginBottom: 14 }}>
-                          View on ArcScan →
-                        </a>
-                      )}
+                      {offTxHash && <a href={`https://testnet.arcscan.app/tx/${offTxHash}`} target="_blank" rel="noreferrer" style={{ fontFamily: S.mono, fontSize: 12, color: S.muted, display: 'block', marginBottom: 14 }}>View on ArcScan →</a>}
                       <button onClick={resetOff} style={btnPrimary(false)}>New transaction</button>
                     </div>
                   )}
-
                   {offStatus === 'error' && (
                     <div style={{ textAlign: 'center', padding: 16 }}>
                       <p style={{ fontSize: 13, color: S.red, marginBottom: 14 }}>Transaction failed. Please try again.</p>
@@ -578,7 +533,7 @@ export default function App() {
       </div>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: `1px solid ${S.border}`, padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', flexShrink: 0 }}>
+      <footer style={{ borderTop: `1px solid ${S.border}`, padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 40 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Logo />
           <span style={{ fontFamily: S.mono, fontSize: 11, color: S.mutedLight }}>Built on Arc Testnet</span>
