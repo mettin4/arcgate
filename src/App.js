@@ -233,7 +233,7 @@ export default function App() {
       </nav>
 
       {/* BODY */}
-      <div style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '40px 40px', display: 'grid', gridTemplateColumns: '1fr 480px', gap: 40, alignItems: 'start', flex: 1 }}>
+      <div style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '40px 40px', display: 'grid', gridTemplateColumns: '1fr 480px', gap: 40, alignItems: 'start' }}>
 
         {/* LEFT */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
