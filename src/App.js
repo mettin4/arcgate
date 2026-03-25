@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import Landing from './Landing';
 
 // index.html <head> içine ekle:
 // <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;900&family=Manrope:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -63,6 +64,7 @@ function validateIBAN(iban) {
 }
 
 export default function App() {
+  const [page, setPage] = useState('landing');
   const [wallet, setWallet] = useState(null);
   const [balance, setBalance] = useState('0');
   const [tab, setTab] = useState('onramp');
@@ -74,9 +76,7 @@ export default function App() {
   const [onStep, setOnStep] = useState(1);
   const [onAmount, setOnAmount] = useState('');
   const [onRef, setOnRef] = useState('');
-  const [onCountdown, setOnCountdown] = useState(null);
   const [onStatus, setOnStatus] = useState('');
- 
 
   const [offStep, setOffStep] = useState(1);
   const [offAmount, setOffAmount] = useState('');
@@ -125,12 +125,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (onCountdown === null || onCountdown <= 0) return;
-    const t = setTimeout(() => setOnCountdown(c => c - 1), 1000);
-    return () => clearTimeout(t);
-  }, [onCountdown]);
-
   function addHistory(type, amount, currency, walletAddr) {
     const addr = walletAddr || wallet;
     if (!addr) return;
@@ -172,7 +166,7 @@ export default function App() {
   function handleOnAmount(val) { if (val === '' || parseFloat(val) >= 0) setOnAmount(val); }
   function handleOffAmount(val) { if (val === '' || (parseFloat(val) >= 0 && parseFloat(val) <= parseFloat(balance))) setOffAmount(val); }
   function startOnRamp() { setOnRef('ARCGATE-' + Math.random().toString(36).slice(2, 8).toUpperCase()); setOnStep(2); }
-  function confirmSent() { setOnStep(3); setOnStatus('pending'); setOnCountdown(10); }
+  function confirmSent() { setOnStep(3); setOnStatus('pending'); }
 
   async function executeOffRamp() {
     if (!wallet || !offAmount) return;
@@ -192,37 +186,30 @@ export default function App() {
     setOffLoading(false);
   }
 
-  function resetOn() { setOnStep(1); setOnAmount(''); setOnRef(''); setOnStatus(''); setOnCountdown(null); }
+  function resetOn() { setOnStep(1); setOnAmount(''); setOnRef(''); setOnStatus(''); }
   function resetOff() { setOffStep(1); setOffAmount(''); setOffIban(''); setOffName(''); setOffStatus(''); setOffTxHash(''); }
 
   const netColor = networkStatus === 'online' ? S.green : networkStatus === 'offline' ? S.red : S.yellow;
 
-  // Shared styles
   const inp = { width: '100%', padding: '11px 14px', background: S.bg, border: `1.5px solid ${S.border}`, borderRadius: 10, fontSize: 14, color: S.text, outline: 'none', fontFamily: S.sans, marginBottom: 12 };
   const btnPrimary = (disabled) => ({ width: '100%', padding: '13px', background: S.text, color: S.white, border: 'none', borderRadius: 11, fontSize: 13, fontWeight: 600, cursor: disabled ? 'not-allowed' : 'pointer', fontFamily: S.sans, marginTop: 14, opacity: disabled ? 0.4 : 1 });
   const btnGhost = { width: '100%', padding: '12px', background: 'transparent', color: S.muted, border: `1px solid ${S.border}`, borderRadius: 11, fontSize: 13, cursor: 'pointer', fontFamily: S.sans, marginTop: 8 };
   const drow = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 0', borderBottom: `1px solid ${S.borderLight}`, fontSize: 13 };
   const feeBox = { background: S.bg, border: `1.5px solid ${S.border}`, borderRadius: 10, padding: '10px 14px', marginBottom: 14 };
 
-  const onRampSteps = [
-    ['Connect wallet', 'Link MetaMask to Arc Testnet'],
-    ['Enter EUR amount', 'Choose how much EUR to spend'],
-    ['Send bank transfer', 'Transfer to our Circle Payments IBAN'],
-    ['Receive USDC', 'Automatically released to your wallet'],
-  ];
-  const offRampSteps = [
-    ['Connect wallet', 'Link MetaMask to Arc Testnet'],
-    ['Enter USDC amount', 'Choose how much USDC to sell'],
-    ['Enter your IBAN', 'Provide your EUR bank account details'],
-    ['Receive EUR', 'Arrives in your bank within 1-2 business days'],
-  ];
+  // Show landing page
+  if (page === 'landing') return <Landing onLaunch={() => setPage('app')} />;
 
   return (
     <div style={{ minHeight: '100vh', background: S.bg, color: S.text, fontFamily: S.sans }}>
 
       {/* NAVBAR */}
       <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', height: 60, background: S.white, borderBottom: `1px solid ${S.border}`, position: 'sticky', top: 0, zIndex: 100 }}>
-        <Logo />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <button onClick={() => setPage('landing')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}>
+            <Logo />
+          </button>
+        </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <NetDot color={netColor} />
           <span style={{ fontFamily: S.mono, fontSize: 10.5, color: S.muted }}>
@@ -249,22 +236,20 @@ export default function App() {
         </div>
       </nav>
 
-      {/* BODY */}
-      <div style={{ maxWidth: 1080, margin: '0 auto', padding: '40px 32px', display: 'grid', gridTemplateColumns: '1fr 380px', gap: 28, alignItems: 'start' }}>
+      {/* BODY — centered layout */}
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '40px 32px', display: 'grid', gridTemplateColumns: '1fr 460px', gap: 32, alignItems: 'start' }}>
 
         {/* LEFT */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
-          {/* Hero */}
           <div>
-            <h1 style={{ fontSize: 34, fontWeight: 800, letterSpacing: '-0.8px', lineHeight: 1.2, marginBottom: 10 }}>
-              Buy & sell USDC<br/>
-              <span style={{ fontWeight: 300, color: S.muted }}>instantly on Arc Testnet</span>
+            <h1 style={{ fontSize: 30, fontWeight: 800, letterSpacing: '-0.8px', lineHeight: 1.2, marginBottom: 8 }}>
+              Buy & sell USDC
+              <span style={{ fontWeight: 300, color: S.muted }}> on Arc Testnet</span>
             </h1>
-            <p style={{ fontSize: 14, color: S.muted, lineHeight: 1.7 }}>EUR bank transfer → USDC on Arc Network. Sub-second settlement. Non-custodial. Open source.</p>
+            <p style={{ fontSize: 14, color: S.muted, lineHeight: 1.7 }}>EUR bank transfer → USDC. Sub-second settlement. Non-custodial.</p>
           </div>
 
-          {/* Stats */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
             {[
               ['Rate', rateLoading ? '…' : `1 EUR = ${eurRate.toFixed(4)} USDC`, 'Updates every 30s'],
@@ -284,7 +269,10 @@ export default function App() {
             <div style={{ fontFamily: S.mono, fontSize: 9.5, color: S.mutedLight, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 16 }}>
               How it works — {tab === 'onramp' ? 'EUR → USDC' : 'USDC → EUR'}
             </div>
-            {(tab === 'onramp' ? onRampSteps : offRampSteps).map(([title, desc], i, arr) => (
+            {(tab === 'onramp'
+              ? [['Connect wallet', 'Link MetaMask to Arc Testnet'], ['Enter EUR amount', 'Choose how much EUR to spend'], ['Send bank transfer', 'Transfer to our Circle Payments IBAN'], ['Receive USDC', 'Automatically released to your wallet']]
+              : [['Connect wallet', 'Link MetaMask to Arc Testnet'], ['Enter USDC amount', 'Choose how much USDC to sell'], ['Enter your IBAN', 'Provide your EUR bank account details'], ['Receive EUR', 'Arrives in your bank within 1-2 business days']]
+            ).map(([title, desc], i, arr) => (
               <div key={i} style={{ display: 'flex', gap: 14, padding: '11px 0', borderBottom: i < arr.length - 1 ? `1px solid ${S.borderLight}` : 'none' }}>
                 <div style={{ width: 26, height: 26, background: S.bg, border: `1px solid ${S.border}`, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: S.mono, fontSize: 11, color: S.muted, flexShrink: 0 }}>{i + 1}</div>
                 <div>
@@ -317,7 +305,6 @@ export default function App() {
             ))}
           </div>
 
-          {/* Badges */}
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
             {['Powered by Circle USDC', 'Built on Arc Testnet', 'Non-custodial', 'Open Source'].map(b => (
               <div key={b} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: S.muted }}><span style={{ color: S.green }}>✓</span>{b}</div>
@@ -328,8 +315,6 @@ export default function App() {
         {/* RIGHT — Trade panel */}
         <div style={{ position: 'sticky', top: 76 }}>
           <div style={{ background: S.white, border: `1px solid ${S.border}`, borderRadius: 18, overflow: 'hidden' }}>
-
-            {/* Tabs */}
             <div style={{ display: 'flex', borderBottom: `1px solid ${S.border}` }}>
               {[['onramp', 'Buy USDC'], ['offramp', 'Sell USDC']].map(([t, label]) => (
                 <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: '15px 0', border: 'none', background: tab === t ? S.white : S.bg, color: tab === t ? S.text : S.muted, fontSize: 13, fontWeight: tab === t ? 600 : 400, cursor: 'pointer', fontFamily: S.sans, borderBottom: tab === t ? `2px solid ${S.text}` : '2px solid transparent', transition: 'all 0.15s' }}>
@@ -340,7 +325,7 @@ export default function App() {
 
             <div style={{ padding: '22px 20px' }}>
 
-              {/* ══ BUY (onramp) ══ */}
+              {/* BUY */}
               {tab === 'onramp' && (
                 <>
                   {onStatus !== 'success' && <StepBar step={onStep} total={3} />}
@@ -375,9 +360,7 @@ export default function App() {
                             USDC <span style={{ opacity: 0.35, fontSize: 9 }}>▾</span>
                           </div>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: S.mono, fontSize: 10, color: S.mutedLight, marginTop: 7 }}>
-                          <span>Arc Testnet</span>
-                        </div>
+                        <div style={{ fontFamily: S.mono, fontSize: 10, color: S.mutedLight, marginTop: 7 }}>Arc Testnet</div>
                       </div>
 
                       {onAmount && parseFloat(onAmount) > 0 && (
@@ -404,7 +387,7 @@ export default function App() {
                       <div style={{ fontFamily: S.mono, fontSize: 9.5, color: S.mutedLight, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 12 }}>Bank transfer details</div>
                       <p style={{ fontSize: 13, color: S.muted, marginBottom: 14 }}>Transfer exactly <strong style={{ color: S.text }}>€{onAmount} EUR</strong> to the account below.</p>
                       <div style={{ background: '#fffbeb', border: '1px solid rgba(217,119,6,0.25)', borderRadius: 10, padding: '10px 14px', marginBottom: 14 }}>
-                        <p style={{ fontSize: 12, color: S.yellow }}>⚠ Always include the reference code. Transfers without reference cannot be matched.</p>
+                        <p style={{ fontSize: 12, color: S.yellow }}>⚠ Always include the reference code.</p>
                       </div>
                       <div style={{ background: S.bg, border: `1px solid ${S.border}`, borderRadius: 12, padding: '4px 14px', marginBottom: 14 }}>
                         {[['Bank', PLATFORM_BANK], ['IBAN', PLATFORM_IBAN], ['BIC/SWIFT', PLATFORM_BIC], ['Amount', `€${onAmount} EUR`], ['Reference', onRef]].map(([k, v]) => (
@@ -426,7 +409,7 @@ export default function App() {
                     <div style={{ textAlign: 'center' }}>
                       <div style={{ width: 56, height: 56, background: '#fffbeb', border: '1px solid rgba(217,119,6,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', fontSize: 22 }}>⏳</div>
                       <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>Waiting for payment</div>
-                      <p style={{ fontSize: 13, color: S.muted, marginBottom: 18, lineHeight: 1.6 }}>We're monitoring incoming transfers. Once your EUR payment arrives, USDC will be released to your wallet.</p>
+                      <p style={{ fontSize: 13, color: S.muted, marginBottom: 18, lineHeight: 1.6 }}>Once your EUR payment arrives, USDC will be released to your wallet.</p>
                       <div style={{ background: S.bg, border: `1px solid ${S.border}`, borderRadius: 12, padding: '4px 14px', marginBottom: 16, textAlign: 'left' }}>
                         <div style={drow}><span style={{ color: S.muted }}>Expected</span><span>€{onAmount} EUR</span></div>
                         <div style={drow}><span style={{ color: S.muted }}>You'll receive</span><span style={{ fontWeight: 600 }}>{onReceive} USDC</span></div>
@@ -434,7 +417,7 @@ export default function App() {
                       </div>
                       <div style={{ background: S.greenBg, border: `1px solid ${S.greenBorder}`, borderRadius: 12, padding: 16 }}>
                         <p style={{ fontSize: 13, fontWeight: 600, color: S.green, marginBottom: 6 }}>✓ Transfer details received</p>
-                        <p style={{ fontFamily: S.mono, fontSize: 11, color: S.green, lineHeight: 1.6 }}>Once your EUR payment arrives, USDC will be released to your wallet within 1-2 business days.</p>
+                        <p style={{ fontFamily: S.mono, fontSize: 11, color: S.green, lineHeight: 1.6 }}>USDC will be released to your wallet within 1-2 business days.</p>
                       </div>
                     </div>
                   )}
@@ -455,7 +438,7 @@ export default function App() {
                 </>
               )}
 
-              {/* ══ SELL (offramp) ══ */}
+              {/* SELL */}
               {tab === 'offramp' && (
                 <>
                   {offStatus !== 'success' && <StepBar step={offStep} total={3} />}
@@ -578,13 +561,11 @@ export default function App() {
                   )}
                 </>
               )}
-
             </div>
           </div>
         </div>
       </div>
 
-      {/* FOOTER */}
       <footer style={{ borderTop: `1px solid ${S.border}`, padding: '20px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 32 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Logo />
