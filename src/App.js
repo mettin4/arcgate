@@ -199,7 +199,7 @@ export default function App() {
   if (page === 'landing') return <Landing onLaunch={() => setPage('app')} />;
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg, color: S.text, fontFamily: S.sans, display: 'flex', flexDirection: 'column' }}>
+    <div style={{ background: S.bg, color: S.text, fontFamily: S.sans }}>
 
       {/* NAVBAR */}
       <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 40px', height: 60, background: S.white, borderBottom: `1px solid ${S.border}`, position: 'sticky', top: 0, zIndex: 100, flexShrink: 0 }}>
@@ -233,7 +233,7 @@ export default function App() {
       </nav>
 
       {/* BODY */}
-      <div style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '40px 40px', display: 'grid', gridTemplateColumns: '1fr 480px', gap: 40, alignItems: 'stretch' }}>
+      <div style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '40px 40px', display: 'grid', gridTemplateColumns: '1fr 480px', gap: 40, alignItems: 'start' }}>
 
         {/* LEFT */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
