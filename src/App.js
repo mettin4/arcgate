@@ -190,7 +190,6 @@ export default function App() {
   function resetOff() { setOffStep(1); setOffAmount(''); setOffIban(''); setOffName(''); setOffStatus(''); setOffTxHash(''); }
 
   const netColor = networkStatus === 'online' ? S.green : networkStatus === 'offline' ? S.red : S.yellow;
-
   const inp = { width: '100%', padding: '11px 14px', background: S.bg, border: `1.5px solid ${S.border}`, borderRadius: 10, fontSize: 14, color: S.text, outline: 'none', fontFamily: S.sans, marginBottom: 12 };
   const btnPrimary = (disabled) => ({ width: '100%', padding: '13px', background: S.text, color: S.white, border: 'none', borderRadius: 11, fontSize: 13, fontWeight: 600, cursor: disabled ? 'not-allowed' : 'pointer', fontFamily: S.sans, marginTop: 14, opacity: disabled ? 0.4 : 1 });
   const btnGhost = { width: '100%', padding: '12px', background: 'transparent', color: S.muted, border: `1px solid ${S.border}`, borderRadius: 11, fontSize: 13, cursor: 'pointer', fontFamily: S.sans, marginTop: 8 };
@@ -200,16 +199,16 @@ export default function App() {
   if (page === 'landing') return <Landing onLaunch={() => setPage('app')} />;
 
   return (
-    <div style={{ minHeight: '100vh', background: S.bg, color: S.text, fontFamily: S.sans }}>
+    <div style={{ minHeight: '100vh', background: S.bg, color: S.text, fontFamily: S.sans, display: 'flex', flexDirection: 'column' }}>
 
       {/* NAVBAR */}
-      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 40px', height: 60, background: S.white, borderBottom: `1px solid ${S.border}`, position: 'sticky', top: 0, zIndex: 100 }}>
+      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 40px', height: 60, background: S.white, borderBottom: `1px solid ${S.border}`, position: 'sticky', top: 0, zIndex: 100, flexShrink: 0 }}>
         <button onClick={() => setPage('landing')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <Logo />
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <NetDot color={netColor} />
-          <span style={{ fontFamily: S.mono, fontSize: 10.5, color: S.muted }}>
+          <span style={{ fontFamily: S.mono, fontSize: 10.5, color: S.muted, whiteSpace: 'nowrap' }}>
             Arc Testnet · {networkStatus === 'online' ? 'Live' : networkStatus === 'offline' ? 'Offline' : 'Checking…'}
           </span>
         </div>
@@ -233,23 +232,18 @@ export default function App() {
         </div>
       </nav>
 
-      {/* BODY — two column, balanced */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 40px', display: 'grid', gridTemplateColumns: '1fr 480px', gap: 40, alignItems: 'start' }}>
+      {/* BODY */}
+      <div style={{ flex: 1, maxWidth: 1200, width: '100%', margin: '0 auto', padding: '40px 40px', display: 'grid', gridTemplateColumns: '1fr 480px', gap: 40, alignItems: 'stretch' }}>
 
-        {/* LEFT — info + history */}
+        {/* LEFT */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
-          {/* Page title */}
           <div>
-            <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.8px', lineHeight: 1.2, marginBottom: 8 }}>
-              Buy & sell USDC
-            </h1>
-            <p style={{ fontSize: 14, color: S.muted, lineHeight: 1.7 }}>
-              EUR bank transfer → USDC on Arc Network. Sub-second settlement. Non-custodial.
-            </p>
+            <h1 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.8px', lineHeight: 1.2, marginBottom: 8 }}>Buy & sell USDC</h1>
+            <p style={{ fontSize: 14, color: S.muted, lineHeight: 1.7 }}>EUR bank transfer → USDC on Arc Network. Sub-second settlement. Non-custodial.</p>
           </div>
 
-          {/* Stats — 3 cards, rate single line */}
+          {/* Stats */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
             {[
               ['Rate', rateLoading ? '…' : `1 EUR = ${eurRate.toFixed(4)} USDC`, 'Updates every 30s'],
@@ -264,15 +258,19 @@ export default function App() {
             ))}
           </div>
 
-          {/* Transaction history */}
+          {/* Recent activity — flex: 1 so it fills remaining height */}
           <div style={{ background: S.white, border: `1px solid ${S.border}`, borderRadius: 14, padding: '22px 24px', flex: 1 }}>
-            <div style={{ fontFamily: S.mono, fontSize: 9.5, color: S.mutedLight, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 16 }}>
-              Recent activity
-            </div>
+            <div style={{ fontFamily: S.mono, fontSize: 9.5, color: S.mutedLight, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 16 }}>Recent activity</div>
             {!wallet ? (
-              <p style={{ fontSize: 13, color: S.mutedLight }}>Connect your wallet to see transaction history.</p>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0', gap: 8 }}>
+                <div style={{ fontSize: 28, opacity: 0.2 }}>↕</div>
+                <p style={{ fontSize: 13, color: S.mutedLight, textAlign: 'center' }}>Connect your wallet to see transaction history.</p>
+              </div>
             ) : txHistory.length === 0 ? (
-              <p style={{ fontSize: 13, color: S.mutedLight }}>No transactions yet.</p>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '40px 0', gap: 8 }}>
+                <div style={{ fontSize: 28, opacity: 0.2 }}>↕</div>
+                <p style={{ fontSize: 13, color: S.mutedLight, textAlign: 'center' }}>No transactions yet.</p>
+              </div>
             ) : txHistory.map((tx, i) => (
               <div key={tx.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: i < txHistory.length - 1 ? `1px solid ${S.borderLight}` : 'none' }}>
                 <div style={{ width: 34, height: 34, borderRadius: 9, background: tx.type === 'buy' ? S.greenBg : '#faf5ff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>
@@ -304,11 +302,9 @@ export default function App() {
           </div>
         </div>
 
-        {/* RIGHT — Trade panel */}
-        <div style={{ position: 'sticky', top: 76 }}>
+        {/* RIGHT — Trade panel, sticky */}
+        <div style={{ position: 'sticky', top: 76, alignSelf: 'start' }}>
           <div style={{ background: S.white, border: `1px solid ${S.border}`, borderRadius: 18, overflow: 'hidden' }}>
-
-            {/* Tabs */}
             <div style={{ display: 'flex', borderBottom: `1px solid ${S.border}` }}>
               {[['onramp', 'Buy USDC'], ['offramp', 'Sell USDC']].map(([t, label]) => (
                 <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: '15px 0', border: 'none', background: tab === t ? S.white : S.bg, color: tab === t ? S.text : S.muted, fontSize: 13, fontWeight: tab === t ? 600 : 400, cursor: 'pointer', fontFamily: S.sans, borderBottom: tab === t ? `2px solid ${S.text}` : '2px solid transparent', transition: 'all 0.15s' }}>
@@ -319,7 +315,7 @@ export default function App() {
 
             <div style={{ padding: '24px 22px' }}>
 
-              {/* ── BUY ── */}
+              {/* BUY */}
               {tab === 'onramp' && (
                 <>
                   {onStatus !== 'success' && <StepBar step={onStep} total={3} />}
@@ -374,7 +370,6 @@ export default function App() {
                       {onAmount && parseFloat(onAmount) > 0 && parseFloat(onAmount) < 10 && (
                         <p style={{ fontFamily: S.mono, fontSize: 11, color: S.red, marginBottom: 10 }}>Minimum amount is €10</p>
                       )}
-
                       <button onClick={startOnRamp} disabled={!onAmountValid || !wallet} style={btnPrimary(!onAmountValid || !wallet)}>
                         {wallet ? 'Continue to payment →' : 'Connect wallet to continue'}
                       </button>
@@ -438,7 +433,7 @@ export default function App() {
                 </>
               )}
 
-              {/* ── SELL ── */}
+              {/* SELL */}
               {tab === 'offramp' && (
                 <>
                   {offStatus !== 'success' && <StepBar step={offStep} total={3} />}
@@ -583,7 +578,7 @@ export default function App() {
       </div>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: `1px solid ${S.border}`, padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 32 }}>
+      <footer style={{ borderTop: `1px solid ${S.border}`, padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Logo />
           <span style={{ fontFamily: S.mono, fontSize: 11, color: S.mutedLight }}>Built on Arc Testnet</span>
